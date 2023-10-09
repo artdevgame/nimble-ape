@@ -1,0 +1,9 @@
+name = "chatty-cat-graphql"
+main = "src/index.ts"
+workers_dev = true
+compatibility_date = "2023-10-02"
+
+[[d1_databases]]
+binding = "DB" # i.e. available in your Worker on env.DB
+database_name = "chatty-cat"
+database_id = "f4eacbb1-57d5-4258-8f9c-d92b9dd05c93"

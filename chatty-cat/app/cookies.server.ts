@@ -1,0 +1,10 @@
+export const COOKIE_CORBADO_SESSION = "cbo_short_session";
+
+// find cookie by name from request headers
+export function getCookie(name: string, headers: Headers) {
+  const cookie = headers.get("cookie");
+  if (!cookie) return null;
+
+  const match = cookie.match(new RegExp(`(^| )${name}=([^;]+)`));
+  if (match) return match[2];
+}
