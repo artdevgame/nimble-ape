@@ -16,6 +16,7 @@
     "@corbado/webcomponent": "^1.0.68",
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-slot": "^1.0.2",
+    "@radix-ui/react-toast": "^1.1.5",
     "@remix-run/cloudflare": "^2.0.1",
     "@remix-run/cloudflare-pages": "^2.0.1",
     "@remix-run/css-bundle": "^2.0.1",

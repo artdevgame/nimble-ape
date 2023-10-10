@@ -1,4 +1,4 @@
-import { redirect } from "@remix-run/cloudflare";
+import { json, redirect } from "@remix-run/cloudflare";
 import type {
   ActionFunction,
   LoaderFunction,
@@ -45,13 +45,13 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
-  const actionId = formData.get("actionId");
+  const code = formData.get("code");
 
-  if (actionId === "existing-meeting") {
-    return redirect(`/chat/existing-id`);
+  if (!code?.toString().trim()) {
+    return json({ errors: { code: "Code is required" } });
   }
 
-  return redirect(`/chat/new-id`);
+  return redirect(`/chat/${code}`);
 };
 
 export default () => {

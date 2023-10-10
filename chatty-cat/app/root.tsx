@@ -12,6 +12,7 @@ import {
 } from "@remix-run/react";
 import styles from "./globals.css";
 import { useEffect, useState } from "react";
+import { Toaster } from "./components/ui/toaster";
 
 declare global {
   interface Window {
@@ -68,8 +69,7 @@ export default function App() {
         />
         <Outlet />
         <ScrollRestoration />
-        {/* <script src="https://pro-9217300933323006574.frontendapi.corbado.io/auth.js"></script>
-        <script src="https://pro-9217300933323006574.frontendapi.corbado.io/utility.js"></script> */}
+        <Toaster />
         <Scripts />
         <LiveReload />
       </body>
