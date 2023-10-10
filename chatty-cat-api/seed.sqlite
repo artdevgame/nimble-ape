@@ -1,0 +1,20 @@
+CREATE TABLE IF NOT EXISTS users ( 
+  id TEXT PRIMARY KEY, 
+  name TEXT
+);
+
+CREATE INDEX IF NOT EXISTS users_name ON users (name);
+
+CREATE TABLE IF NOT EXISTS meetings (
+  id TEXT PRIMARY KEY
+);
+
+CREATE TABLE IF NOT EXISTS meetings_users (
+  id INTEGER PRIMARY KEY,
+  meeting_id TEXT NOT NULL,
+  user_id TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS meetings_users_user ON meetings_users (user_id);
+CREATE INDEX IF NOT EXISTS meetings_users_meeting ON meetings_users (meeting_id);
+CREATE UNIQUE INDEX IF NOT EXISTS meetings_users_user_in_meeting ON meetings_users (meeting_id, user_id);

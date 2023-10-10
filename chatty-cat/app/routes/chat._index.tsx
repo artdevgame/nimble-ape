@@ -9,11 +9,7 @@ import { gql } from "graphql-request";
 import { StartChattingCard } from "~/components/chat/start-chatting-card";
 
 import { getApiClient } from "~/lib/apiClient";
-
-interface User {
-  id: string;
-  name: string;
-}
+import type { Meeting, User } from "~/types";
 
 type Data = { authenticatedUser: User };
 
@@ -44,8 +40,31 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export const action: ActionFunction = async ({ request }) => {
+  const apiClient = getApiClient(request);
   const formData = await request.formData();
+  const actionId = formData.get("actionId");
   const code = formData.get("code");
+
+  console.log({ actionId, code });
+
+  if (!apiClient) {
+    throw redirect("/", 302);
+  }
+
+  if (actionId === "new-meeting") {
+    const query = gql`
+      mutation CreateMeeting {
+        createMeeting {
+          id
+        }
+      }
+    `;
+    const { createMeeting: meeting } = await apiClient.request<{
+      createMeeting: Meeting;
+    }>(query);
+
+    return redirect(`/chat/${meeting.id}`);
+  }
 
   if (!code?.toString().trim()) {
     return json({ errors: { code: "Code is required" } });
