@@ -6,7 +6,7 @@ import { GraphQLError } from "graphql";
 
 export const builder = new SchemaBuilder<{
   AuthScopes: {
-    user: boolean;
+    authenticated: boolean;
   };
   Context: Context;
 }>({
@@ -20,6 +20,6 @@ export const builder = new SchemaBuilder<{
   },
   plugins: [ScopeAuthPlugin, SimpleObjectsPlugin],
   authScopes: async ({ userService }) => ({
-    user: userService.isAuthenticated(),
+    authenticated: userService.isAuthenticated(),
   }),
 });

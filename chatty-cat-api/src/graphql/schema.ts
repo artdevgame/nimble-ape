@@ -28,7 +28,7 @@ builder.mutationType({
   fields: (t) => ({
     upsertUser: t.field({
       type: User,
-      authScopes: { user: true },
+      authScopes: { authenticated: true },
       args: {
         name: t.arg.string(),
       },
