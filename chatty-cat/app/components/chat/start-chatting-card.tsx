@@ -59,9 +59,9 @@ export const StartChattingCard = ({ name }: { name: string }) => {
           New meeting
         </Button>
         <Form method="post">
-          <div className="flex gap-3">
+          <div className="flex gap-2">
             <Input placeholder="Enter a meeting code" name="code" />
-            <Button variant="outline">Join</Button>
+            <Button variant="ghost">Join</Button>
           </div>
         </Form>
       </CardFooter>
