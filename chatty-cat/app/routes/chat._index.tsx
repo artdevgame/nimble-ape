@@ -1,10 +1,12 @@
-import {
-  redirect,
-  type LoaderFunction,
-  type MetaFunction,
+import { redirect } from "@remix-run/cloudflare";
+import type {
+  ActionFunction,
+  LoaderFunction,
+  MetaFunction,
 } from "@remix-run/cloudflare";
 import { useLoaderData } from "@remix-run/react";
 import { gql } from "graphql-request";
+import { StartChattingCard } from "~/components/chat/start-chatting-card";
 
 import { getApiClient } from "~/lib/apiClient";
 
@@ -41,18 +43,25 @@ export const loader: LoaderFunction = async ({ request }) => {
   return { authenticatedUser };
 };
 
+export const action: ActionFunction = async ({ request }) => {
+  const formData = await request.formData();
+  const actionId = formData.get("actionId");
+
+  if (actionId === "existing-meeting") {
+    return redirect(`/chat/existing-id`);
+  }
+
+  return redirect(`/chat/new-id`);
+};
+
 export default () => {
   const {
     authenticatedUser: { name },
   } = useLoaderData<Data>();
 
   return (
-    <div>
-      <h1>Hi {name}</h1>
-      <p>
-        This route will be concerned with making a peer connection and
-        displaying tools to manage the chat.
-      </p>
+    <div className="flex items-center justify-center h-full">
+      <StartChattingCard name={name} />
     </div>
   );
 };
