@@ -26,7 +26,7 @@ export const loader = async ({ context, request }: LoaderFunctionArgs) => {
     throw redirect("/");
   }
 
-  return { authenticatedUser: getAuthenticatedUser({ apiClient }) };
+  return { authenticatedUser: await getAuthenticatedUser({ apiClient }) };
 };
 
 export const action = async ({ context, request }: ActionFunctionArgs) => {
