@@ -23,6 +23,7 @@ const useUserService: Plugin<Context> = {
 };
 
 export const yoga = createYoga<Env & ExecutionContext>({
+  graphqlEndpoint: "/",
   schema,
   plugins: [useUserService],
 });

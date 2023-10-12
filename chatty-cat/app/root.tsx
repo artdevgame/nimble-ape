@@ -1,5 +1,9 @@
 import { json } from "@remix-run/cloudflare";
-import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/cloudflare";
+import type {
+  AppLoadContext,
+  LinksFunction,
+  LoaderFunctionArgs,
+} from "@remix-run/cloudflare";
 import { cssBundleHref } from "@remix-run/css-bundle";
 import {
   Links,
@@ -16,9 +20,7 @@ import { Toaster } from "./components/ui/toaster";
 
 declare global {
   interface Window {
-    ENV: {
-      CORBADO_PROJECT_ID: string;
-    };
+    ENV: Pick<AppLoadContext["env"], "CORBADO_PROJECT_ID">;
   }
 }
 
@@ -28,7 +30,8 @@ export const links: LinksFunction = () => [
 ];
 
 export const loader = ({ context }: LoaderFunctionArgs) => {
-  return json({ ENV: context.env as Window["ENV"] });
+  const { CORBADO_PROJECT_ID } = context.env as Window["ENV"];
+  return json({ ENV: { CORBADO_PROJECT_ID } });
 };
 
 export default function App() {

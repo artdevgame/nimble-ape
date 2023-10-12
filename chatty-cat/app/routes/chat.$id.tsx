@@ -19,12 +19,19 @@ export const meta: MetaFunction = () => {
   return [{ title: "Chatty Cat: Chatting" }];
 };
 
-export const loader = async ({ params, request }: LoaderFunctionArgs) => {
+export const loader = async ({
+  context,
+  params,
+  request,
+}: LoaderFunctionArgs) => {
   if (!params.id) {
     return redirect("/chat");
   }
 
-  const apiClient = getApiClient(request);
+  const apiClient = getApiClient({
+    endpoint: context.env.GRAPHQL_ENDPOINT,
+    headers: request.headers,
+  });
 
   if (!apiClient) {
     throw redirect("/");
@@ -40,8 +47,11 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   return { id: params.id, authenticatedUser, participants: meeting.users };
 };
 
-export const action = async ({ request }: ActionFunctionArgs) => {
-  const apiClient = getApiClient(request);
+export const action = async ({ context, request }: ActionFunctionArgs) => {
+  const apiClient = getApiClient({
+    endpoint: context.env.GRAPHQL_ENDPOINT,
+    headers: request.headers,
+  });
   const formData = await request.formData();
   const actionId = formData.get("actionId");
   const meetingId = formData.get("meetingId")?.toString();

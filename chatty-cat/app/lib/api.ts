@@ -2,11 +2,15 @@ import { GraphQLClient, gql } from "graphql-request";
 import { COOKIE_CORBADO_SESSION, getCookie } from "~/cookies.server";
 import type { Meeting, User } from "~/types";
 
-const endpoint = "http://127.0.0.1:8787/graphql";
-
-export const getApiClient = (request: Request) => {
+export const getApiClient = ({
+  endpoint,
+  headers,
+}: {
+  endpoint: string;
+  headers: Headers;
+}) => {
   // https://github.com/cloudflare/workers-sdk/issues/3259#issuecomment-1751112701
-  const sessionToken = getCookie(COOKIE_CORBADO_SESSION, request.headers);
+  const sessionToken = getCookie(COOKIE_CORBADO_SESSION, headers);
 
   if (!sessionToken) return;
 
