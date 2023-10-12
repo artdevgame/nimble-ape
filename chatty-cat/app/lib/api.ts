@@ -28,7 +28,7 @@ export const getAuthenticatedUser = async ({
   apiClient: GraphQLClient;
 }) => {
   const query = gql`
-    query {
+    query GetAuthenticatedUser {
       user {
         id
         name
@@ -37,6 +37,27 @@ export const getAuthenticatedUser = async ({
   `;
   const { user } = await apiClient.request<{
     user: User;
+  }>(query);
+  return user;
+};
+
+export const upsertUser = async ({
+  apiClient,
+  name,
+}: {
+  apiClient: GraphQLClient;
+  name?: string;
+}) => {
+  const query = gql`
+    mutation UpsertUser($name: String) {
+      upsertUser(name: $name) {
+        id
+        name
+      }
+    }
+  `;
+  const { upsertUser: user } = await apiClient.request<{
+    upsertUser: User;
   }>(query);
   return user;
 };

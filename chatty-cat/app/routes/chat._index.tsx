@@ -7,7 +7,7 @@ import type {
 import { useLoaderData } from "@remix-run/react";
 import { StartChattingCard } from "~/components/chat/start-chatting-card";
 
-import { createMeeting, getApiClient, getAuthenticatedUser } from "~/lib/api";
+import { createMeeting, getApiClient, upsertUser } from "~/lib/api";
 import type { User } from "~/types";
 
 type Data = { authenticatedUser: User };
@@ -26,7 +26,7 @@ export const loader = async ({ context, request }: LoaderFunctionArgs) => {
     throw redirect("/");
   }
 
-  return { authenticatedUser: await getAuthenticatedUser({ apiClient }) };
+  return { authenticatedUser: await upsertUser({ apiClient }) };
 };
 
 export const action = async ({ context, request }: ActionFunctionArgs) => {
