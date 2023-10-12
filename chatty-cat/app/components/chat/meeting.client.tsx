@@ -4,9 +4,16 @@ import { Button } from "../ui/button";
 import { useFetcher, useNavigate } from "@remix-run/react";
 import Peer from "peerjs";
 import type { User } from "~/types";
+import { default as QrScanner } from "qr-scanner";
+import { getTime, parse } from "date-fns";
 
 const videoStream = new MediaStream();
 const canvasStream = createBlankVideoStream();
+
+// 16:9
+const videoDimensions = { width: 640, height: 360 };
+
+let latencyTimeout: ReturnType<typeof setTimeout>;
 
 export const Meeting = ({
   id,
@@ -24,6 +31,8 @@ export const Meeting = ({
   const peerVideoRef = useRef<HTMLVideoElement>(null);
 
   const [showVideo, setShowVideo] = useState(videoStream.active);
+  const [latency, setLatency] = useState<number>();
+  const previousLatency = useRef<number>();
 
   const myPeer = useRef<Peer>();
   const otherUsers = useRef(
@@ -49,16 +58,72 @@ export const Meeting = ({
     });
   }, [myUser.id]);
 
+  const computeLatency = (extractedTimestamp: string, arrived: number) => {
+    const rawDate = extractedTimestamp.split("oT")[1];
+    const parsedDate = parse(rawDate, "yyMMddHHmmss.SSS", Date.now());
+    const now = getTime(parsedDate);
+
+    if (isNaN(now)) return;
+    setLatency(now - arrived);
+  };
+
   const handleStartVideoStream = async () => {
     if (!myVideoRef.current) return;
-    const track = await navigator.mediaDevices.getUserMedia({
+
+    const cameraStream = await navigator.mediaDevices.getUserMedia({
       video: {
-        width: { min: 1920 },
-        height: { min: 1080 },
+        width: { min: videoDimensions.width },
+        height: { min: videoDimensions.height },
       },
     });
-    videoStream.removeTrack(canvasStream.getVideoTracks()[0]);
-    videoStream.addTrack(track.getVideoTracks()[0]);
+    const cameraTrack = cameraStream.getVideoTracks()[0];
+
+    videoStream.getVideoTracks().forEach((track) => {
+      track.stop();
+      videoStream.removeTrack(track);
+    });
+
+    if (
+      "MediaStreamTrackProcessor" in window &&
+      "MediaStreamTrackGenerator" in window
+    ) {
+      // @ts-ignore
+      const trackProcessor = new MediaStreamTrackProcessor({
+        track: cameraTrack,
+      });
+      // @ts-ignore
+      const trackGenerator = new MediaStreamTrackGenerator({ kind: "video" });
+      const transformer = new TransformStream({
+        async transform(cameraFrame, controller) {
+          const arrived = Date.now();
+          const bitmap = await createImageBitmap(cameraFrame);
+
+          try {
+            const result = await QrScanner.scanImage(bitmap, {
+              returnDetailedScanResult: true,
+            });
+            computeLatency(result.data, arrived);
+          } catch {
+            // no qr code found
+          } finally {
+            bitmap.close();
+          }
+          controller.enqueue(cameraFrame);
+        },
+        flush(controller) {
+          controller.terminate();
+        },
+      });
+      trackProcessor.readable
+        .pipeThrough(transformer)
+        .pipeTo(trackGenerator.writable);
+
+      videoStream.addTrack(
+        new MediaStream([trackGenerator]).getVideoTracks()[0]
+      );
+    } else {
+      videoStream.addTrack(cameraTrack);
+    }
 
     myVideoRef.current.srcObject = videoStream;
 
@@ -68,11 +133,11 @@ export const Meeting = ({
 
   const handleStopVideoStream = () => {
     if (!myVideoRef.current) return;
+
     videoStream.getVideoTracks().forEach((track) => {
       track.stop();
       videoStream.removeTrack(track);
     });
-
     videoStream.addTrack(canvasStream.getVideoTracks()[0]);
 
     setShowVideo(false);
@@ -102,6 +167,16 @@ export const Meeting = ({
       videoStream.removeTrack(canvasStream.getVideoTracks()[0]);
     };
   }, []);
+
+  useEffect(() => {
+    clearTimeout(latencyTimeout);
+    latencyTimeout = setTimeout(() => {
+      if (latency && previousLatency.current === latency) {
+        setLatency(undefined);
+      }
+    }, 800);
+    previousLatency.current = latency;
+  }, [latency]);
 
   useEffect(() => {
     if (myPeer.current) return;
@@ -143,11 +218,18 @@ export const Meeting = ({
 
   return (
     <div className="w-full h-full">
-      <video
-        ref={myVideoRef}
-        autoPlay
-        className="bg-black aspect-video w-1/5 absolute bottom-10 right-10 rounded-lg drop-shadow-lg shadow-lg"
-      />
+      <div className="w-1/5 absolute bottom-10 right-10">
+        {latency && (
+          <strong className="z-10 absolute -top-4 -right-4 text-2xl bg-pink-500 rounded-lg px-2.5 py-1.5 shadow-lg drop-shadow-lg">
+            {latency}
+          </strong>
+        )}
+        <video
+          ref={myVideoRef}
+          autoPlay
+          className="bg-black aspect-video rounded-lg drop-shadow-lg shadow-lg"
+        />
+      </div>
       <video
         ref={peerVideoRef}
         autoPlay
@@ -169,13 +251,13 @@ export const Meeting = ({
 function createBlankVideoStream() {
   // we use the blank canvas track to ensure there is always something to
   // broadcast to the other participants when they join the meeting
-  const width = 1920;
-  const height = 1080;
+  const width = 640;
+  const height = 480;
 
-  const canvas = Object.assign(document.createElement("canvas"), {
-    width,
-    height,
-  });
+  const canvas = Object.assign(
+    document.createElement("canvas"),
+    videoDimensions
+  );
 
   canvas.getContext("2d")!.fillRect(0, 0, width, height);
 
