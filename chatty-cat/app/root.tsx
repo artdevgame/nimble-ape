@@ -13,6 +13,7 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
+  useRouteError,
 } from "@remix-run/react";
 import styles from "./globals.css";
 import { useEffect, useState } from "react";
@@ -75,6 +76,33 @@ export default function App() {
         <Toaster />
         <Scripts />
         <LiveReload />
+      </body>
+    </html>
+  );
+}
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+  console.error(error);
+  return (
+    <html>
+      <head>
+        <title>Oh no!</title>
+        <Meta />
+        <Links />
+      </head>
+      <body>
+        <div className="flex h-full justify-center items-center flex-col gap-6">
+          <div>
+            <strong>WOAH.</strong> That was not meant to happen.
+          </div>
+          <img
+            src="https://media4.giphy.com/media/xTcf1fNdmXFQ6iYgUM/giphy.gif"
+            alt="Sorry about that"
+            className="rounded-lg"
+          />
+        </div>
+        <Scripts />
       </body>
     </html>
   );
