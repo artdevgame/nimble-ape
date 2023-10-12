@@ -1,15 +1,14 @@
 import { json, redirect } from "@remix-run/cloudflare";
 import type {
-  ActionFunction,
-  LoaderFunction,
+  ActionFunctionArgs,
+  LoaderFunctionArgs,
   MetaFunction,
 } from "@remix-run/cloudflare";
 import { useLoaderData } from "@remix-run/react";
-import { gql } from "graphql-request";
 import { StartChattingCard } from "~/components/chat/start-chatting-card";
 
-import { getApiClient } from "~/lib/apiClient";
-import type { Meeting, User } from "~/types";
+import { createMeeting, getApiClient, getAuthenticatedUser } from "~/lib/api";
+import type { User } from "~/types";
 
 type Data = { authenticatedUser: User };
 
@@ -17,57 +16,33 @@ export const meta: MetaFunction = () => {
   return [{ title: "Chatty Cat: Chatting" }];
 };
 
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const apiClient = getApiClient(request);
 
   if (!apiClient) {
-    throw redirect("/", 302);
+    throw redirect("/");
   }
 
-  const query = gql`
-    mutation UpsertUserMutation {
-      upsertUser {
-        id
-        name
-      }
-    }
-  `;
-  const { upsertUser: authenticatedUser } = await apiClient.request<{
-    upsertUser: User;
-  }>(query);
-
-  return { authenticatedUser };
+  return { authenticatedUser: getAuthenticatedUser({ apiClient }) };
 };
 
-export const action: ActionFunction = async ({ request }) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const apiClient = getApiClient(request);
   const formData = await request.formData();
   const actionId = formData.get("actionId");
   const code = formData.get("code");
 
-  console.log({ actionId, code });
-
   if (!apiClient) {
-    throw redirect("/", 302);
+    throw redirect("/");
   }
 
   if (actionId === "new-meeting") {
-    const query = gql`
-      mutation CreateMeeting {
-        createMeeting {
-          id
-        }
-      }
-    `;
-    const { createMeeting: meeting } = await apiClient.request<{
-      createMeeting: Meeting;
-    }>(query);
-
+    const meeting = await createMeeting({ apiClient });
     return redirect(`/chat/${meeting.id}`);
   }
 
   if (!code?.toString().trim()) {
-    return json({ errors: { code: "Code is required" } });
+    return json({ actionId, errors: { code: "Code is required" } });
   }
 
   return redirect(`/chat/${code}`);
