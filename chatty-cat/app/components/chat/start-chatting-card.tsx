@@ -23,18 +23,19 @@ export const StartChattingCard = ({ name }: { name: string }) => {
   }, [data]);
 
   return (
-    <Card className="w-min-content">
+    <Card>
       <CardHeader>
         <CardTitle>Hey {name} 👋</CardTitle>
       </CardHeader>
       <CardContent>Lets start chatting!</CardContent>
-      <CardFooter className="flex justify-between gap-10">
+      <CardFooter className="flex gap-10 flex-col items-start">
         <Form method="post">
           <Button name="actionId" value="new-meeting">
             New meeting
           </Button>
         </Form>
-        <Form method="post">
+        <Form method="post" className="flex flex-col gap-3">
+          Friend sent you a code?
           <div className="flex gap-2">
             <Input placeholder="Enter a meeting code" name="code" />
             <Button variant="ghost" name="actionId" value="join-meeting">
