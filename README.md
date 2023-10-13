@@ -2,7 +2,7 @@
 
 `chatty-cat` is a peer to peer video call software developed as a solution to a tech challenge set by [Nimble Ape](https://nimblea.pe).
 
-https://github.com/artdevgame/nimble-ape/assets/353729/66fb6c38-b343-4e75-9e5c-a446ab9c6c99
+https://github.com/artdevgame/nimble-ape/assets/353729/f59beeca-d0b6-4f4f-9bcf-6bdee941b0f3
 
 ## How to use the project
 
