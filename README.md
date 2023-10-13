@@ -16,7 +16,7 @@ To see how much latency there is on the call, load [GoPro's Precision Date and T
 
 ## How to install and run the project
 
-> Please see [known issues](#🐛-known-issues--limitations)
+> Please see [known issues](#-known-issues--limitations)
 
 1. Create a new [Corbado project](https://app.corbado.com/) for local dev
    1. Application URL: http://localhost:8788
