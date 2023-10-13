@@ -27,15 +27,15 @@ To see how much latency there is on the call, load [GoPro's Precision Date and T
    2. Add the following vars to `.dev.vars`:
       1. `CORBADO_PROJECT_ID=pro-[id]` (from step 1)
       2. `GRAPHQL_ENDPOINT=http://127.0.0.1:8787`
-3. [Create a D1 database](https://developers.cloudflare.com/d1/get-started/#2-create-a-database) to hold app data
-   1. `cd chatty-cat-api`
-   2. `wrangler d1 create chatty-cat`
-   3. Update `wrangler.toml` to use your D1 config
-4. Create the tables and indexes
-   1. `wrangler d1 execute chatty-cat --file=./seed.sql --local`
-5. Navigate to `chatty-cat` & `chatty-cat-api` directories separately and run `npm install` to install the required dependencies.
-6. Navigate to the root of the project and run `npm i && npm run dev`
-7. Visit http://localhost:8788 to view the site **(Corbado might not work if you use the IP)**
+3. Install app dependencies: `npm install`
+4. Install api dependencies
+   1. `cd ../chatty-cat-api`
+   2. `npm install`
+5. [Create a D1 database](https://developers.cloudflare.com/d1/get-started/#2-create-a-database) to hold app data 2. `wrangler d1 create chatty-cat` 3. Update `wrangler.toml` to use your D1 config
+6. Create the tables and indexes
+   1. `wrangler d1 execute chatty-cat --file=./seed.sqlite --local`
+7. Navigate to the root of the project and run `npm install && npm run dev`
+8. Visit http://localhost:8788 to view the site **(Corbado might not work if you use the IP, keep this in mind if you see sign up errors too)**
 
 ## Appendix
 
@@ -99,7 +99,7 @@ The following are notable technologies in the project:
 - My commit messages follow the Conventional Commits: https://www.conventionalcommits.org/ specification.
 - I haven't added tests due to time constraints 🙀 but I would add some [unit tests](https://jestjs.io/) in the GraphQL layer and if complexity grew in the user flows of the frontend, I would add [E2E tests](https://www.cypress.io/) to give me confidence there. I would consider writing unit tests to cover the latency calculation.
 
-### <a name="issues"></a> 🐛 Known issues & limitations
+### 🐛 Known issues & limitations
 
 - I'm unsure if I'm cleaning up the MediaStream from the trackGenerator properly, disabling the camera causes an error to be thrown in the console and the connection can be held open even when the disable video button is pressed.
 - The points raised in `User disconnection` above can be problematic if two people have joined and not cleanly exited. If there's a problem getting into the room, it might be easier to create a new one for now.
