@@ -221,7 +221,7 @@ export const Meeting = ({
       <div className="w-1/5 absolute bottom-10 right-10">
         {latency && (
           <strong className="z-10 absolute -top-4 -right-4 text-2xl bg-pink-500 rounded-lg px-2.5 py-1.5 shadow-lg drop-shadow-lg">
-            {latency}
+            {latency}ms
           </strong>
         )}
         <video

@@ -12,7 +12,7 @@ Once authenticated, create a **New meeting** and send your friend the code (the 
 
 There's not much to do inside, press the video button to start broadcasting your camera. When a friend joins, you will see their broadcast.
 
-To see how much latency there is on the call, load [GoPro's Precision Date and Time (Local)](https://gopro.github.io/labs/control/precisiontime/) tool on your phone and hold the QR code up to your camera. A little popup should appear by your face in the window with a `ms` value.
+To see how much latency there is on the call, load [GoPro's Precision Date and Time **(Local)**](https://gopro.github.io/labs/control/precisiontime/) tool on your phone and hold the QR code up to your camera. A little popup should appear by your face in the window with a `ms` value.
 
 ## How to install and run the project
 
@@ -33,7 +33,7 @@ To see how much latency there is on the call, load [GoPro's Precision Date and T
    1. `wrangler d1 execute chatty-cat --file=./seed.sql --local`
 5. Navigate to `chatty-cat` & `chatty-cat-api` directories separately and run `npm install` to install the required dependencies.
 6. Navigate to the root of the project and run `npm i && npm run dev`
-7. Visit http://localhost:8788 to view the site (Corbado can be a bit weird if you use the IP)
+7. Visit http://localhost:8788 to view the site **(Corbado might not work if you use the IP)**
 
 ## Appendix
 
