@@ -31,7 +31,9 @@ To see how much latency there is on the call, load [GoPro's Precision Date and T
 4. Install api dependencies
    1. `cd ../chatty-cat-api`
    2. `npm install`
-5. [Create a D1 database](https://developers.cloudflare.com/d1/get-started/#2-create-a-database) to hold app data 2. `wrangler d1 create chatty-cat` 3. Update `wrangler.toml` to use your D1 config
+5. [Create a D1 database](https://developers.cloudflare.com/d1/get-started/#2-create-a-database) to hold app data
+   1. `wrangler d1 create chatty-cat`
+   2. Update `wrangler.toml` to use your D1 config
 6. Create the tables and indexes
    1. `wrangler d1 execute chatty-cat --file=./seed.sqlite --local`
 7. Navigate to the root of the project and run `npm install && npm run dev`
@@ -100,6 +102,8 @@ The following are notable technologies in the project:
 - I haven't added tests due to time constraints 🙀 but I would add some [unit tests](https://jestjs.io/) in the GraphQL layer and if complexity grew in the user flows of the frontend, I would add [E2E tests](https://www.cypress.io/) to give me confidence there. I would consider writing unit tests to cover the latency calculation.
 
 ### 🐛 Known issues & limitations
+
+> These are issues I'm confident that I could resolve given more time
 
 - I'm unsure if I'm cleaning up the MediaStream from the trackGenerator properly, disabling the camera causes an error to be thrown in the console and the connection can be held open even when the disable video button is pressed.
 - The points raised in `User disconnection` above can be problematic if two people have joined and not cleanly exited. If there's a problem getting into the room, it might be easier to create a new one for now.

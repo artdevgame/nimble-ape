@@ -3,7 +3,7 @@
   "scripts": {
     "dev:app": "npm run dev --prefix chatty-cat",
     "dev:api": "npm run dev --prefix chatty-cat-api",
-    "dev": "concurrently 'npm run dev:app' 'npm run dev:api'"
+    "dev": "concurrently \"npm run dev:app\" \"npm run dev:api\""
   },
   "devDependencies": {
     "concurrently": "^8.2.1"
