@@ -12,9 +12,11 @@ Once authenticated, create a **New meeting** and send your friend the code (the 
 
 There's not much to do inside, press the video button to start broadcasting your camera. When a friend joins, you will see their broadcast.
 
-To see how much latency there is on the call, load [GoPro's Precision Date and Time **(Local)**](https://gopro.github.io/labs/control/precisiontime/) tool on your phone and hold the QR code up to your camera. A little popup should appear by your face in the window with a `ms` value.
+To see how much latency there is on the call, load [GoPro's Precision Date and Time **(Local)**](https://gopro.github.io/labs/control/precisiontime/) tool on your phone and hold the QR code up to your camera. A little popup should appear by your face in the window with a `ms` value. (Chrome only)
 
 ## How to install and run the project
+
+> Please see [known issues](#🐛-known-issues--limitations)
 
 1. Create a new [Corbado project](https://app.corbado.com/) for local dev
    1. Application URL: http://localhost:8788
@@ -97,7 +99,8 @@ The following are notable technologies in the project:
 - My commit messages follow the Conventional Commits: https://www.conventionalcommits.org/ specification.
 - I haven't added tests due to time constraints 🙀 but I would add some [unit tests](https://jestjs.io/) in the GraphQL layer and if complexity grew in the user flows of the frontend, I would add [E2E tests](https://www.cypress.io/) to give me confidence there. I would consider writing unit tests to cover the latency calculation.
 
-### 🐛 Known issues
+### <a name="issues"></a> 🐛 Known issues & limitations
 
 - I'm unsure if I'm cleaning up the MediaStream from the trackGenerator properly, disabling the camera causes an error to be thrown in the console and the connection can be held open even when the disable video button is pressed.
 - The points raised in `User disconnection` above can be problematic if two people have joined and not cleanly exited. If there's a problem getting into the room, it might be easier to create a new one for now.
+- I've hardcapped each meeting room to 2 people. You can't join a meeting room using the same id (techically, you can join but things won't work as expected). If you want to run a test locally, sign up with 2 different accounts so they each have a unique user id.
